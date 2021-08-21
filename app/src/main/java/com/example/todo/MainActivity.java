@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 arrayTask);
         lvTask.setAdapter(adapter);
 
+        //to show the menu when user click to item
         lvTask.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -50,17 +51,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        //to add the new task
         btnAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String task = edtAddTask.getText().toString();
                 if (task.length() > 0) {
-                    task = "#" + (arrayTask.size() + 1) + ": " + task;
-                    arrayTask.add(task);
-                    adapter.notifyDataSetChanged();
+                    addNewTask(task);
                     edtAddTask.setText("");
-                    SaveTask.saveTaskArray(getApplicationContext(), arrayTask);
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Vui lòng nhập nhiệm vụ!", Toast.LENGTH_SHORT).show();
@@ -68,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    //show the menu options
+    //show the menu options when user click to item
     private void showPopupMenu(PopupMenu popupMenu, int position) {
         popupMenu.show();
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -119,6 +117,25 @@ public class MainActivity extends AppCompatActivity {
 
         if (smallTask.length > 1) return smallTask[1];
         else return null;
+    }
+    //function add a new task
+    private void addNewTask(String newTask) {
+        int i;
+        arrayTask.add("");
+        for (i = arrayTask.size() -  1; i > 0; i--)
+            arrayTask.set(i, arrayTask.get(i-1));
+        //add new task to the position 0
+        arrayTask.set(0, "#" + 1 + ": " + newTask);
+
+        String[] task;
+        //reset the number of each task
+        for (i = 0; i < arrayTask.size(); i++) {
+            task = arrayTask.get(i).split("(?<=:)", 2);
+            arrayTask.set(i, "#" + (i + 1) + ":" + task[1]);
+        }
+
+        adapter.notifyDataSetChanged();
+        SaveTask.saveTaskArray(MainActivity.this, arrayTask);
     }
     //function delete the task
     private void removeTask(int position) {
