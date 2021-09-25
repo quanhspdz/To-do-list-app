@@ -121,11 +121,23 @@ public class MainActivity extends AppCompatActivity {
     //function add a new task
     private void addNewTask(String newTask) {
         int i;
+
+        //count the number of tasks are not done
+        int numOfNotDone = 0;
+        for (i = 0; i < arrayTask.size(); i++) {
+            String task = arrayTask.get(i);
+            if (!task.contains("(ĐÃ XONG)")) numOfNotDone++;
+            else break;
+        }
+
+        //to move arrayTask to the right 1 index
         arrayTask.add("");
-        for (i = arrayTask.size() -  1; i > 0; i--)
+        for (i = arrayTask.size() -  1; i > numOfNotDone; i--)
             arrayTask.set(i, arrayTask.get(i-1));
-        //add new task to the position 0
-        arrayTask.set(0, "#" + 1 + ": " + newTask);
+
+
+        //add new task to the end of not done tasks
+        arrayTask.set(numOfNotDone, "#" + 69 + ": " + newTask);
 
         String[] task;
         //reset the number of each task
@@ -137,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         SaveTask.saveTaskArray(MainActivity.this, arrayTask);
     }
-    //function delete the task
+    //function delete task
     private void removeTask(int position) {
         arrayTask.remove(position);
         int i;
